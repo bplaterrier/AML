@@ -25,7 +25,7 @@
 % This file is adapted from the SPARSEBAYES baseline implementation (V1.10)
 %
 %
-function K = SB2_KernelFunction(X1,X2,kernel_,lengthScale)
+function K = KernelFunction(X1,X2,kernel_,lengthScale)
 
 [N1 d]		= size(X1);
 [N2 d]		= size(X2);

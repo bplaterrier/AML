@@ -25,6 +25,11 @@ RVs         = MODEL.RVs;
 
 % Compute RVM over test data and calculate error
 BASIS	= SB2_KernelFunction(x(:), RVs, kernel, lengthScale);
+% Add bias vector if necessary
+M = size(BASIS,2);
+if useBias
+   BASIS = [BASIS ones(M,1)];
+end
 y_rvm	= BASIS*weights;
 
 end
