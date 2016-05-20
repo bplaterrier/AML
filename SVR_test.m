@@ -47,7 +47,7 @@ OPTIONS.useBias         = 0;            % add bias to the model (for custom basi
 MODEL = svr_train(t, x_svm, OPTIONS);
 
 % Do SVR on data using svmregressor
-[y_svm] = svm_regressor(x_svm, t, OPTIONS, MODEL);
+[y_svm] = svr_predict(x_svm, MODEL);
 
 %Plot the results
 plotSVR(x, y, y_svm, t, data, MODEL, OPTIONS, COLOR)
