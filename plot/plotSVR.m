@@ -1,16 +1,36 @@
-function [] = plotSVR( x, y, y_svm, t, data, MODEL, COLOR )
+function [] = plotSVR( x, y, y_svm, t, data, MODEL, OPTIONS, COLOR )
     
     figure;
     if data.D==1,
-        plot(x, y,'-', 'Color', COLOR.sinc);
         hold on
+        
+        % Data
+        plot(x, y,'-', 'Color', COLOR.sinc);
+        
+        % Model
         plot(x, t, '.', 'Color', COLOR.data);
-        plot(x, y_svm,'-','LineWidth', 1, 'Color', COLOR.pred);
+        
+        % Regression
+        plot(x, y_svm,'-',  'LineWidth', 1, 'Color', COLOR.pred);
+        
+        % Support Vectors
         plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
-    
+        
+        % Epsilon-tube
+        area(x, y_svm + OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+        area(x, y_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+        
+        
+        % Data
+        plot(x, y,'-', 'Color', COLOR.sinc);
+        plot(x, t, '.', 'Color', COLOR.data);
+        plot(x, y_svm,'-',  'LineWidth', 1, 'Color', COLOR.pred);
+        plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
+        
+        % Legends & Axis options
         xlabel('X');
         ylabel('Y');  
-        legend('Actual Model', 'Datapoints', 'Regression', 'Support Vectors', 'Location', 'NorthWest')
+        legend('Actual Model', 'Datapoints', 'Regression', 'Support Vectors', 'Epsilon-tube', 'Location', 'NorthWest')
         title('SVR on the data');
         
     else
