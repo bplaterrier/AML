@@ -4,32 +4,43 @@
 %
 % OUTPUT ARGUMENTS:
 %
-%       Y        N x D data matrix corresponding to latent variable
-%       T        N x D data matrix corresponding to (noisy) observation
+%       y        N x D data matrix corresponding to latent variable
+%       t        N x D data matrix corresponding to (noisy) observation
 % 
 % INPUT ARGUMENTS:
 %
-%       X        N x D data matrix
-%       noise    string specifying type of noise ('gauss' or 'unif')
-%       scale    scale of the noise
+%       data     structure containing major data attributes
+%       rseed    Fix the random seed for reproductibility of results
 %       
-function [Y, T] = generateSinc(X, noise, scale)
+function [x, y, t] = generateSinc(data, rseed)
 
-    [N,D] = size(X);
+    rand('state', rseed);
+    randn('state', rseed);
     
-    if D==1,
-        Y = sin(abs(X))./abs(X);
+    if data.D==1
+        x = [-1:2/(data.N-1):1]'*data.scale;
     else
-        Y = sin(sqrt(sum(X.^2,2)))./sqrt(sum(X.^2,2));
+        sqrtN = floor(sqrt(data.N));
+        N = sqrtN*sqrtN;
+        x = data.scale*[0:sqrtN-1]'/sqrtN;
+        [gx, gy]= meshgrid(x);
+        x = [gx(:) gy(:)];
     end
-    
-    switch lower(noise)
-        case 'gaussian',
-            T = Y + scale*randn(N,1);
+
+    % Generate latent and target data
+    if data.D==1,
+        y = sin(abs(x))./abs(x);
+    else
+        y = sin(sqrt(sum(x.^2,2)))./sqrt(sum(x.^2,2));
+    end
+
+    switch lower(data.noiseType)
+        case 'gauss',
+            t = y + randn(size(x,1),1)*data.noise;
         case 'unif',
-            T = Y + (-scale + 2*scale*rand(N,1));
+            t = y + (-data.noise + 2*rand(size(x,1),1)*data.noise);
         otherwise,
-            error('Unrecognized noise type: %s', noise);
+            error('Unrecognized noise type: %s', data.noiseType);
     end
 end
 
