@@ -110,4 +110,19 @@ x_rvm = (x - repmat(min(x,[],1),size(x,1),1))*spdiags(1./(max(x,[],1)-min(x,[],1
 
 % Train and predict
 MODEL = [];
-[y_rvm, MODEL] = rvm_regressor(x, t, OPTIONS, MODEL);
+[y_rvm, MODEL] = rvm_regressor(x_rvm, t, OPTIONS, MODEL);
+
+figure
+if data.D==1,
+    plot(x, y,'-', 'Color', COL_sinc);
+    hold on
+    plot(x, t, '.', 'Color', COL_data);
+    plot(x, y_rvm,'r-','LineWidth', 1, 'Color', COL_pred);
+  
+    plot(x(MODEL.RVs_idx), t(MODEL.RVs_idx),'o', 'Color', COL_rv);
+else
+    mesh(gx, gy, reshape(y_rvm,size(gx)), 'edgecolor', COL_sinc, 'facecolor', COL_sinc);
+    mesh(gx, gy, reshape(t,size(gx)), 'edgecolor', COL_sinc, 'facecolor' ,COL_data);
+end
+hold off
+legend('Actual Model', 'Datapoints', 'Regression', 'Relevance Vectors', 'Location', 'NorthWest')
