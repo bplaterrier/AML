@@ -50,4 +50,4 @@ MODEL = svr_train(t, x_svm, OPTIONS);
 [y_svm] = svm_regressor(x_svm, t, OPTIONS, MODEL);
 
 %Plot the results
-plotSVR(x, y, y_svm, t, data, MODEL, COLOR)
+plotSVR(x, y, y_svm, t, data, MODEL, OPTIONS, COLOR)
