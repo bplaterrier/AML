@@ -61,9 +61,9 @@ switch OPTIONS.svr_type
         switch OPTIONS.kernel_type
             case 0 % linear
                 options = strcat({'-s 4 '}, {'-t '}, {''}, {num2str(OPTIONS.kernel_type)},{' -n '}, {''}, {num2str(OPTIONS.nu)},{' -h 0 -c '}, {''}, {num2str(OPTIONS.C)}, {' -b '}, {''}, {num2str(OPTIONS.probabilities)});
-            case 1 % gauss
+            case 1 % poly
                 options = strcat({'-s 4 '}, {'-t '}, {''}, {num2str(OPTIONS.kernel_type)},{' -d '}, {''}, {num2str(OPTIONS.degree)},{' -r '}, {''}, {num2str(OPTIONS.coeff)}, {' -n '}, {''},{num2str(OPTIONS.nu)},{' -h 0 -g 1 -c '}, {''}, {num2str(OPTIONS.C)}, {' -b '}, {''}, {num2str(OPTIONS.probabilities)});
-            case 2 % poly
+            case 2 % gauss
                 OPTIONS.gamma = 1 / (2*OPTIONS.lengthScale^2);
                 options = strcat({'-s 4 '}, {'-t '}, {''}, {num2str(OPTIONS.kernel_type)},{' -n '}, {''}, {num2str(OPTIONS.nu)},{' -g '}, {''}, {num2str(OPTIONS.gamma)},{' -h 0 -c '}, {''}, {num2str(OPTIONS.C)}, {' -b '}, {''}, {num2str(OPTIONS.probabilities)});
         end
@@ -74,6 +74,8 @@ options = options{1};
 
 %% Train SVM Model
 MODEL = svmtrain(t, x, options);
+MODEL.kernel = OPTIONS.kernel;
+MODEL.lengthScale = OPTIONS.lengthScale;
 
 %% The LIBSVM Model struct will contain the following parameters
 % -Parameters: parameters

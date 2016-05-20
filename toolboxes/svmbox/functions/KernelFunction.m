@@ -38,7 +38,7 @@ if length(kernel_)>=5 && strcmp(kernel_(1:5),'hpoly')
   p		= str2num(kernel_(6:end));
   kernel_	= 'hpoly';
 end
-eta	= 1/lengthScale^2;
+eta	= 1/(2*lengthScale^2);
 
 switch lower(kernel_)
   
