@@ -17,13 +17,13 @@ data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 [x, y, t] = generateSinc(data, rseed); 
 
 % Plot settings
-COL_sinc = 'k';     % color of the actual function
-COL_data = 'b';     % color of the real data
-COL_pred = 'r';     % color of the prediction
-COL_rv = 'k';       % color of the relevance vectors
+COLOR.sinc = 'k';     % color of the actual function
+COLOR.data = 'b';     % color of the real data
+COLOR.pred = 'r';     % color of the prediction
+COLOR.rv = 'k';       % color of the relevance vectors
 
 %% Plot the data and actual function
-plotModel(x, y, t, data, COL_sinc, COL_data);
+plotModel(x, y, t, data, COLOR);
 
 %% Do RVR on the data
 
@@ -72,17 +72,5 @@ x_rvm = normalize(x);
 MODEL = [];
 [y_rvm, MODEL] = rvm_regressor(x_rvm, t, OPTIONS, MODEL);
 
-figure
-if data.D==1,
-    plot(x, y,'-', 'Color', COL_sinc);
-    hold on
-    plot(x, t, '.', 'Color', COL_data);
-    plot(x, y_rvm,'r-','LineWidth', 1, 'Color', COL_pred);
-  
-    plot(x(MODEL.RVs_idx), t(MODEL.RVs_idx),'o', 'Color', COL_rv);
-else
-    mesh(gx, gy, reshape(y_rvm,size(gx)), 'edgecolor', COL_sinc, 'facecolor', COL_sinc);
-    mesh(gx, gy, reshape(t,size(gx)), 'edgecolor', COL_sinc, 'facecolor' ,COL_data);
-end
-hold off
-legend('Actual Model', 'Datapoints', 'Regression', 'Relevance Vectors', 'Location', 'NorthWest')
+plotRVR(x,y,y_rvm,t,data,MODEL,COLOR);
+

@@ -1,25 +1,24 @@
-function [] = plotModel(x, y, t, data, COL_sinc, COL_data)    
+function [] = plotModel(x, y, t, data, COLOR)    
 
-    figure(1);
+    figure;
     whitebg(1,'w');
     clf;
     hold on;
     
     if data.D==1,
-        plot(x, y,'-', 'Color', COL_sinc);
-        plot(x, t, '.', 'Color', COL_data);
+        plot(x, y,'-', 'Color', COLOR.sinc);
+        plot(x, t, '.', 'Color', COLOR.data);
+        xlabel('X');
+        ylabel('Y');
+        legend('Target Function', 'Actual Data');
+        title('Model of the data');
     else
-        mesh(gx, gy, reshape(y,size(gx)), 'edgecolor', COL_sinc, 'facecolor', COL_sinc);
-        mesh(gx, gy, reshape(t,size(gx)), 'edgecolor', COL_sinc, 'facecolor' ,COL_data);
+        mesh(gx, gy, reshape(y,size(gx)), 'edgecolor', COLOR.sinc, 'facecolor', COLOR.sinc);
+        mesh(gx, gy, reshape(t,size(gx)), 'edgecolor', COLOR.sinc, 'facecolor' ,COLOR.data);
     end
 
     set(gca,'FontSize',12)
     drawnow
-    
-    xlabel('X');
-    ylabel('Y');
-
-
 
 end
 
