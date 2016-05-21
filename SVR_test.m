@@ -51,3 +51,9 @@ MODEL = svr_train(t, x_svm, OPTIONS);
 
 %Plot the results
 plotSVR(x, y, y_svm, t, data, MODEL, OPTIONS, COLOR)
+
+% Compute errors
+mse  = gfit2(t, y_svm, '1');
+nmse = gfit2(t, y_svm, '2');
+disp([mse nmse]);
+
