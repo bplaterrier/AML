@@ -1,11 +1,11 @@
-function [y_svr, MODEL] = svm_regressor(x,t, OPTIONS, MODEL)
+function [y_svm, MODEL] = svm_regressor(x, t, OPTIONS, MODEL)
 %SVM_REGRESSOR.
 %
 %   input ----------------------------------------------------------------
 %
 %       o X            : (N x D), number of input datapoints.
 %
-%       o y            : (N x 1), number of output datapoints.
+%       o t            : (N x 1), number of output datapoints.
 %
 %       o svr_options  : (1 x 1), parameter settings for svr model
 %
@@ -25,10 +25,11 @@ end
 % if the model doesn't exist, train it
 if isempty(MODEL)
         % Train SVM Regressor
-        MODEL = svr_train(t, x, OPTIONS);    
+        MODEL = svr_train(t, x, OPTIONS);
+        disp(MODEL);
 end
 
 % Predict Values based on query points
-[y_svr]  = svmpredict(t, x, MODEL);
+[y_svm]  = svr_predict(x, MODEL);
 
 end
