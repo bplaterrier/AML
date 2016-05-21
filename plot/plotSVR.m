@@ -28,10 +28,12 @@ function [] = plotSVR( x, y, y_svm, t, data, MODEL, OPTIONS, COLOR )
         plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
         
         % Legends & Axis options
-        xlabel('X');
-        ylabel('Y');  
-        legend('Actual Model', 'Datapoints', 'Regression', 'Support Vectors', 'Epsilon-tube', 'Location', 'NorthWest')
-        title('SVR on the data');
+        xlabel('X', 'Interpreter', 'LaTex');
+        ylabel('Y', 'Interpreter', 'LaTex');
+        legend({'Actual Model', 'Datapoints', 'Regression', 'Support Vectors', '$\epsilon$-tube'}, 'Interpreter', 'LaTex', 'Location', 'NorthWest')
+        
+        title_string = sprintf('$\\epsilon$-SVR + RBF kernel: $\\epsilon$ = %g, $\\sigma$ = %g, $C$ =%d, $SV$ = %d', OPTIONS.epsilon, OPTIONS.lengthScale, OPTIONS.C, MODEL.totalSV);
+        title(title_string, 'Interpreter', 'LaTex');
         
     else
         mesh(gx, gy, reshape(y_svm,size(gx)), 'edgecolor', COLOR.sinc, 'facecolor', COLOR.sinc);
