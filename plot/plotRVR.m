@@ -10,7 +10,7 @@ function [] = plotRVR(x, y, y_rvm, t, data, MODEL, COLOR)
         
         xlabel('X', 'Interpreter', 'LaTex');
         ylabel('Y', 'Interpreter', 'LaTex');
-        legend({'Actual Model', 'Datapoints', 'Regression', 'Relevance Vectors', 'Location', 'NorthWest'}, 'Interpreter', 'LaTex')
+        legend({'Actual Model', 'Datapoints', 'Regression', 'Relevance Vectors'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex')
         
         title_string = sprintf('RVR + RBF Kernel: $\\sigma$ = %g, RV = %d, $\\epsilon_{est}$= %g', MODEL.lengthScale, length(MODEL.RVs_idx), sqrt(1/MODEL.beta)); 
         title(title_string, 'Interpreter', 'LaTex');

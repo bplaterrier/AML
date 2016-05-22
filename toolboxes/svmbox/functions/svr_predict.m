@@ -27,6 +27,6 @@ bias        = -MODEL.rho;
 BASIS	= KernelFunction(x(:), SVs, kernel, lengthScale);
 
 % Add bias vector if necessary
- y_rvm	= BASIS*weights + bias;
+y_rvm	= BASIS*weights + bias;
 
 end
