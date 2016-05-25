@@ -816,6 +816,7 @@ if nargout>=1
       DIAGNOSTIC.S_Factor	= S_out;
       DIAGNOSTIC.Q_Factor	= Q_out;
       DIAGNOSTIC.M_full		= M_full;
+      DIAGNOSTIC.SIGMA      = SIGMA;
     end
   end
 end

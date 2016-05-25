@@ -31,14 +31,15 @@ function K = SB2_KernelFunction(X1,X2,kernel_,lengthScale)
 [N2 d]		= size(X2);
 
 if length(kernel_)>=4 && strcmp(kernel_(1:4),'poly')
-  p		= str2num(kernel_(5:end));
+  p		= str2double(kernel_(5:end));
   kernel_	= 'poly';
 end
 if length(kernel_)>=5 && strcmp(kernel_(1:5),'hpoly')
-  p		= str2num(kernel_(6:end));
+  p		= str2double(kernel_(6:end));
   kernel_	= 'hpoly';
 end
 eta	= 1/(2*lengthScale^2);
+p = 10;
 
 switch lower(kernel_)
   
@@ -60,9 +61,11 @@ switch lower(kernel_)
   K	= exp(-sqrt(eta*distSqrd(X1,X2)));
   
  case 'poly',
+  eta = lengthScale;
   K	= (X1*(eta*X2)' + 1).^p;
 
  case 'hpoly',
+  eta = lengthScale;
   K	= (eta*X1*X2').^p;
 
  case 'spline',

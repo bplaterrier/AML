@@ -33,5 +33,7 @@ if isempty(MODEL)
 end
 
 % Predict RVR function from Train data
-[y_rvm] = rvr_predict(x,  MODEL);
+[y_rvm, mu_star, sigma_star] = rvr_predict(x,  MODEL);
+MODEL.mu_star = mu_star;
+MODEL.sigma_star = sigma_star;
 end

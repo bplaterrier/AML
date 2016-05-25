@@ -49,7 +49,7 @@ end
 %% Train RVR Model
 % "Train" a sparse Bayes kernel-based model (relevance vector machine) 
 [PARAMETER, HYPERPARAMETER, DIAGNOSTIC] = ...
-    SparseBayes(kernel, BASIS, t, USER_OPTIONS, SETTINGS);
+    SparseBayes('Gaussian', BASIS, t, USER_OPTIONS, SETTINGS);
 
 %% Model Parameters
 %       WEIGHTS Parameter values of estimated model (sparse)
@@ -72,5 +72,6 @@ MODEL.alpha         = HYPERPARAMETER.Alpha;
 MODEL.beta          = HYPERPARAMETER.beta;
 MODEL.gamma         = DIAGNOSTIC.Gamma;
 MODEL.RVs           = x(MODEL.RVs_idx,:);
+MODEL.SIGMA         = DIAGNOSTIC.SIGMA;
 
 end
