@@ -24,7 +24,7 @@ function [y_rvm, mu_star, sigma_star] = rvr_predict(x,  MODEL)
     RVs         = MODEL.RVs;
 
     % Compute RVM over test data and calculate error
-    BASIS	= SB2_KernelFunction(x(:), RVs, kernel, lengthScale);
+    BASIS	= SB2_KernelFunction(x, RVs, kernel, lengthScale);
     % Add bias vector if necessary
     M = size(BASIS,2);
     if useBias
@@ -33,7 +33,7 @@ function [y_rvm, mu_star, sigma_star] = rvr_predict(x,  MODEL)
     
     y_rvm	= BASIS*weights;
     
-    BASIS	= SB2_KernelFunction(RVs, x(:), kernel, lengthScale);
+    BASIS	= SB2_KernelFunction(RVs, x, kernel, lengthScale);
     % Compute variable estimated noise variance
     for i=1:length(x),
         mu_star(i) = weights'*BASIS(:,i);

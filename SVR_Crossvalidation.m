@@ -8,7 +8,7 @@ clc;
 rseed = 1; % choose a seed
 
 % Set default values for data
-data.N = 200;                   % number of samples
+data.N = 2000;                   % number of samples
 data.D = 1;                     % dimension of data
 data.scale = 10;                % scale of dimensions
 data.noise = 0.1;               % scale of noise
@@ -39,7 +39,7 @@ OPTIONS.C               = 50;           % penalty factor (default 1)
 OPTIONS.nu              = 0.05;         % nu parameter (default 1)
 OPTIONS.epsilon         = 0.1;          % epsilon parameter (default 0.1)
 OPTIONS.tolerance       = 0.001;        % tolerance of termination criterion (default 0.001)
-OPTIONS.lengthScale     = 0.2;          % lengthscale parameter (~std dev for gaussian kernel)
+OPTIONS.lengthScale     = 0.01;          % lengthscale parameter (~std dev for gaussian kernel)
 OPTIONS.probabilities   = 0;            % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
 OPTIONS.useBias         = 0;            % add bias to the model (for custom basis matrix)
 
@@ -62,10 +62,10 @@ disp([mse nmse]);
 disp('Parameter grid search SVR');
 
 limits_C        = [1 500];   % Limits of penalty C
-limits_epsilon  = [0.05 1];  % Limits of epsilon
-limits_w        = [0.25 2];  % Limits of kernel width \sigma
+limits_epsilon  = [0.1 0.5];  % Limits of epsilon
+limits_w        = [0.01 0.5];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
-step            = 5;         % Step of parameter grid 
+step            = 2;         % Step of parameter grid 
 Kfold           = 10;
 
 metric = 'nmse';

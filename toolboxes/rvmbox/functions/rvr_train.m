@@ -23,8 +23,8 @@ function [MODEL] = rvr_train(x, t, OPTIONS)
 
 %% Parse RVM Options
 % Transform Data to Columns
-x = x(:);
-t = t(:);
+% x = x(:);
+% t = t(:);
 
 % Parsing Parameter for RVR
 useBias             = OPTIONS.useBias;

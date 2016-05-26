@@ -34,15 +34,19 @@ rvr_options.lengthScale = svr_options.lengthScale;
 rvr_options.BASIS = [];
 
 %computational cost
-gf_svr = [];
-gf_rvr = [];
-time_svr = [];
-time_rvr = [];
+gf_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+gf_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+time_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+time_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+sv_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+sv_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 for k = 1: 1 : nb_try 
     g_svr = [];
     g_rvr = [];
     t_svr = [];
     t_rvr = [];
+    s_svr = [];
+    s_rvr = [];
     for n = n_limites(1): n_jump : n_limites(2)
                
         % Generate True function and data
@@ -55,13 +59,16 @@ for k = 1: 1 : nb_try
         % Train SVR Model
         clear model y_svr
         tstart = tic;
-        [y_svr, ~] = svm_regressor(x_svr, y, svr_options, []);
+        [y_svr, model] = svm_regressor(x_svr, y, svr_options, []);
         t_svr = [t_svr, toc(tstart)];     
 %         %plot
 %         plotSVR( x_svr, y_true, y_svr, y, data, model, svr_options, [] );
         
         %goodness of fit
         g_svr = [g_svr, gfit2(y,y_svr,'2')];
+        
+        % number of support vectors
+        s_svr = [s_svr, model.totalSV];
         
 
         disp(strcat('Iteration: ', num2str(n), ', Trial: ', num2str(k)));
@@ -78,28 +85,85 @@ for k = 1: 1 : nb_try
         %goodness of fit
         g_rvr = [g_rvr, gfit2(y,y_rvr,'2')];
         
+        %number of relevance vectors
+        s_rvr = [s_rvr, length(model.RVs_idx)];
+        
     end
     gf_svr = [gf_svr; g_svr];
     gf_rvr = [gf_rvr; g_rvr];
     time_svr = [time_svr; t_svr];
-    time_rvr = [time_rvr; t_rvr];   
+    time_rvr = [time_rvr; t_rvr]; 
+    sv_svr = [sv_svr; s_svr];
+    sv_rvr = [sv_rvr; s_rvr];
 end
 
-% std
+%% std
 nb_samples = n_limites(1): n_jump : n_limites(2);
 figure(1)
+
+plot(nb_samples, mean(time_rvr,1), 'r');
 hold on
+plot(nb_samples, mean(time_svr, 1), 'b');
 
-semilogy(nb_samples ,mean(time_svr,1), nb_samples, mean(time_rvr, 1));
+area(nb_samples, mean(time_rvr,1) + std(time_rvr, 0, 1), 0.001, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+area(nb_samples, mean(time_rvr,1) - std(time_rvr, 0, 1), 0.001, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
 
+plot(nb_samples, mean(time_svr, 1), 'b');
+area(nb_samples, mean(time_svr,1) + std(time_svr, 0, 1), 0.001, 'EdgeAlpha', 0, 'FaceColor', 'b', 'FaceAlpha', 0.1);
+area(nb_samples, mean(time_svr,1) - std(time_svr, 0, 1), 0.001, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
 
+axis([-inf inf 0 inf]);
+% set(gca,'yscale','log')
+legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
+title('Computational time comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');
+xlabel('Number of datapoints', 'Interpreter', 'LaTex');
+ylabel('Time (seconds)', 'Interpreter', 'LaTex')
 
-legend('SVR', 'RVR');
-hold off
+%%
+
+nb_samples = n_limites(1): n_jump : n_limites(2);
 figure(2)
+
+plot(nb_samples, mean(gf_rvr,1), 'r');
 hold on
-errorbar(nb_samples ,mean(gf_svr,1),std (gf_svr, 0, 1))
-errorbar(nb_samples ,mean(gf_rvr,1),std (gf_rvr, 0, 1))
-hold off
+plot(nb_samples, mean(gf_svr, 1), 'b');
+area(nb_samples, mean(gf_rvr,1) + std(gf_rvr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+area(nb_samples, mean(gf_rvr,1) - std(gf_rvr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+% 
+plot(nb_samples, mean(gf_svr, 1), 'b');
+area(nb_samples, mean(gf_svr,1) + std(gf_svr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'b', 'FaceAlpha', 0.1);
+area(nb_samples, min(mean(gf_rvr, 1) ,mean(gf_svr,1) - std(gf_svr, 0, 1)), 0, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 0.8);
+
+axis([-inf inf 0 inf]);
+% set(gca,'yscale','log')
+legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
+title('Error comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');
+xlabel('Number of datapoints', 'Interpreter', 'LaTex');
+ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
+
+%% Support vectors
+close
+nb_samples = n_limites(1): n_jump : n_limites(2);
+figure(3)
+
+plot(nb_samples, mean(sv_rvr,1), 'r');
+hold on
+plot(nb_samples, mean(sv_svr, 1), 'b');
+% area(nb_samples, mean(sv_rvr,1) + std(sv_rvr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+% area(nb_samples, mean(sv_rvr,1) - std(sv_rvr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+% 
+plot(nb_samples, mean(sv_svr, 1), 'b');
+% area(nb_samples, mean(sv_svr,1) + std(sv_svr, 0, 1), 0, 'EdgeAlpha', 0, 'FaceColor', 'b', 'FaceAlpha', 0.1);
+% area(nb_samples, min(mean(sv_svr, 1) ,mean(sv_svr,1) - std(sv_svr, 0, 1)), 0, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 0.8);
+
+axis([-inf inf 0 inf]);
+% set(gca,'yscale','log')
+legend({'RVR', 'SVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
+title('Number of support/relevance vector (mean $\pm$ std)', 'Interpreter', 'LaTex');
+xlabel('Number of datapoints', 'Interpreter', 'LaTex');
+ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
+
+
+
 
 

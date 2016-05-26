@@ -24,7 +24,7 @@ SVs         = MODEL.SVs;
 bias        = -MODEL.rho;
 
 % Compute RVM over test data and calculate error
-BASIS	= KernelFunction(x(:), SVs, kernel, lengthScale);
+BASIS	= KernelFunction(x, SVs, kernel, lengthScale);
 
 % Add bias vector if necessary
 y_rvm	= BASIS*weights + bias;
