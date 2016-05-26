@@ -19,8 +19,6 @@ OPTIONS.useBias = 0;                % add bias vector to the estimated model
 OPTIONS.maxIts = 500;
 OPTIONS.BASIS = [];
 
-
-
 MODEL = [];
 [y_rvm, MODEL] = rvm_regressor(x, t, OPTIONS, MODEL);
 
@@ -32,7 +30,7 @@ MODEL = [];
 
 gfit2(t, y_rvm, '2')
 
-[sortedX, index] = sort(x(:,1));
+[sortedX, index] = sort(x(:,3));
 plot(sortedX, y_rvm(index))
 
 %% RVR crossvalidation 
@@ -52,7 +50,8 @@ rbf_vars = [0.1:0.1:20];
 
 test  = cell(length(rbf_vars),1);
 train = cell(length(rbf_vars),1);
-
+ 
+tstart = tic;
 for i=1:length(rbf_vars)
     disp(['[' num2str(i) '/' num2str(length(rbf_vars)) ']']);
     
@@ -66,6 +65,8 @@ for i=1:length(rbf_vars)
     train{i}                = train_eval;
     disp(' ');
 end
+time = toc(tstart);
+disp(time)
 
 % Get Statistics
 [ stats ] = ml_get_cv_grid_states_regression(test,train);
@@ -82,13 +83,18 @@ options.para_name   = 'variance rbf';
 %% Optimal parameters
 [min_metricSVR,indSVR] = min(stats.test.('nmse').mean(:));
 [sigma_min] = ind2sub(size(stats.test.('nmse').mean),indSVR);
-sigma_opt = rbf_vars(sigma_min);
+
+
+sigma_opt = rbf_vars(sigma_min); % A garder
 
 
 OPTIONS.lengthScale   = sigma_opt;
 clear model
 [y_rvm, MODEL] = rvm_regressor(x,t,OPTIONS,[]);
+
+% A garder
 gfit2(t, y_rvm, '2')
+length(MODEL.RVs_idx)
 
 %% SVR
 OPTIONS.svr_type        = 0;            % 0: epsilon-SVR / 1: nu-SVR
@@ -116,19 +122,23 @@ gfit2(t, y_svm, '2')
 
 disp('Parameter grid search SVR');
 
-limits_C        = [1 500];   % Limits of penalty C
+limits_C        = [1 500];  % Limits of penalty C
 limits_epsilon  = [0.5 2];  % Limits of epsilon
-limits_w        = [0.5 0.1];  % Limits of kernel width \sigma
+limits_w        = [0.1 1];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
-step            = 20;         % Step of parameter grid 
+step            = 2;         % Step of parameter grid 
 Kfold           = 10;
 
 metric = 'nmse';
 
-tic
+tstart = tic;
 % Do Grid Search
 [ ctest, ctrain , cranges ] = ml_grid_search_regr( x, t, Kfold, parameters, step);
-toc
+
+
+time = toc(tstart);
+disp(time);
+
 %% Get CV statistics
 statsSVR = ml_get_cv_grid_states_regression(ctest,ctrain);
 
@@ -147,6 +157,8 @@ hcv = ml_plot_cv_grid_states_regression(statsSVR,parameters_used,cv_plot_options
 %% Get optimal parameters and plot result
 [min_metricSVR,indSVR] = min(statsSVR.test.(metric).mean(:));
 [C_min, eps_min, sigma_min] = ind2sub(size(statsSVR.test.(metric).mean),indSVR);
+
+% a garder
 C_opt = cranges{1}(C_min);
 epsilon_opt = cranges{2}(eps_min);
 sigma_opt = cranges{3}(sigma_min);
@@ -160,4 +172,6 @@ OPTIONS.lengthScale = sigma_opt;   %  radial basis function: exp(-gamma*|u-v|^2)
 MODEL = svr_train(t, x, OPTIONS);
 [y_svm] = svr_predict(x, MODEL);
 
+% a garder
+MODEL.totalSV
 gfit2(t, y_svm, '2')
