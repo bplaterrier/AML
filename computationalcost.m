@@ -3,7 +3,7 @@ close all;
 
 %%  computational cost
 % Set parameters for computational cost
-nb_try = 3;
+nb_try = 10;
 n_jump = 100;
 
 % Set default values for data
@@ -33,13 +33,15 @@ rvr_options.kernel  = 'gaussian';
 rvr_options.lengthScale = svr_options.lengthScale;
 rvr_options.BASIS = [];
 
-%computational cost
+%initialization values of interest
 gf_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 gf_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 time_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 time_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 sv_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 sv_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+
+%computational cost
 for k1 = 1: 1 : nb_try 
     k2 = 1;
     for n = n_limites(1): n_jump : n_limites(2)
@@ -66,7 +68,6 @@ for k1 = 1: 1 : nb_try
         sv_svr(k1,k2) = model.totalSV;
         
 
-        disp(strcat('Iteration: ', num2str(n), ', Trial: ', num2str(k1)));
         %Train RVR Model
         clear model y_rvr
         tstart = tic;
@@ -89,7 +90,6 @@ for k1 = 1: 1 : nb_try
  end
 
 %% plot time
-close all
 figure(1)
 hold on
 nb_samples = n_limites(1): n_jump : n_limites(2);
@@ -110,7 +110,7 @@ nb_samples = n_limites(1): n_jump : n_limites(2);
 boundedline(nb_samples, mean(gf_svr,1), std(gf_svr, 0, 1), 'b', nb_samples, mean(gf_rvr,1), std(gf_rvr, 0, 1), 'r', 'transparency', 0.1, 'alpha');
 hold off
 
-axis([o inf 0 inf]);
+axis([0 inf 0 inf]);
 % set(gca,'yscale','log')
 legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
 title('Error comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');

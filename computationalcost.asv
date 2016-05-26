@@ -33,13 +33,15 @@ rvr_options.kernel  = 'gaussian';
 rvr_options.lengthScale = svr_options.lengthScale;
 rvr_options.BASIS = [];
 
-%computational cost
+%initialization values of interest
 gf_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 gf_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 time_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 time_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 sv_svr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 sv_rvr = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
+
+%computational cost
 for k1 = 1: 1 : nb_try 
     k2 = 1;
     for n = n_limites(1): n_jump : n_limites(2)
@@ -60,13 +62,12 @@ for k1 = 1: 1 : nb_try
 %         plotSVR( x_svr, y_true, y_svr, y, data, model, svr_options, [] );
         
         %goodness of fit
-        g_svr(k1,k2) = gfit2(y,y_svr,'2')];
+        gf_svr(k1,k2) = gfit2(y,y_svr,'2');
         
         % number of support vectors
-        s_svr(k1,k2) = model.totalSV;
+        sv_svr(k1,k2) = model.totalSV;
         
 
-        disp(strcat('Iteration: ', num2str(n), ', Trial: ', num2str(k)));
         %Train RVR Model
         clear model y_rvr
         tstart = tic;
@@ -78,10 +79,10 @@ for k1 = 1: 1 : nb_try
 %         plotRVR(x_rvr, y_true, y_rvr, y, data, model, [])
 
         %goodness of fit
-        g_rvr = [g_rvr, gfit2(y,y_rvr,'2')];
+        gf_rvr(k1,k2) = gfit2(y,y_rvr,'2');
         
         %number of relevance vectors
-        s_rvr = [s_rvr, length(model.RVs_idx)];
+        sv_rvr(k1,k2) = length(model.RVs_idx);
         
         k2 = k2+1;
         
@@ -89,19 +90,19 @@ for k1 = 1: 1 : nb_try
  end
 
 %% plot time
-close all
+c
 figure(1)
 hold on
 nb_samples = n_limites(1): n_jump : n_limites(2);
 boundedline(nb_samples, mean(time_svr,1), std(time_svr, 0, 1), 'b', nb_samples, mean(time_rvr,1), std(time_rvr, 0, 1), 'r', 'transparency', 0.1, 'alpha');
 hold off
 
-% axis([-inf inf 0 inf]);
-% % set(gca,'yscale','log')
-% legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
-% title('Computational time comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');
-% xlabel('Number of datapoints', 'Interpreter', 'LaTex');
-% ylabel('Time (seconds)', 'Interpreter', 'LaTex')
+axis([0 inf 0 inf]);
+% set(gca,'yscale','log')
+legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
+title('Computational time comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');
+xlabel('Number of datapoints', 'Interpreter', 'LaTex');
+ylabel('Time (seconds)', 'Interpreter', 'LaTex')
 
 %% plot gf
 figure(2)
@@ -110,7 +111,7 @@ nb_samples = n_limites(1): n_jump : n_limites(2);
 boundedline(nb_samples, mean(gf_svr,1), std(gf_svr, 0, 1), 'b', nb_samples, mean(gf_rvr,1), std(gf_rvr, 0, 1), 'r', 'transparency', 0.1, 'alpha');
 hold off
 
-axis([-inf inf 0 inf]);
+axis([0 inf 0 inf]);
 % set(gca,'yscale','log')
 legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
 title('Error comparison (mean $\pm$ std)', 'Interpreter', 'LaTex');
@@ -124,9 +125,9 @@ nb_samples = n_limites(1): n_jump : n_limites(2);
 boundedline(nb_samples, mean(sv_svr,1), std(sv_svr, 0, 1), 'b', nb_samples, mean(sv_rvr,1), std(sv_rvr, 0, 1), 'r','transparency', 0.1, 'alpha');
 hold off
 
-axis([-inf inf 0 inf]);
+axis([0 inf 0 inf]);
 % set(gca,'yscale','log')
-legend({'RVR', 'SVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
+legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
 title('Number of support/relevance vector (mean $\pm$ std)', 'Interpreter', 'LaTex');
 xlabel('Number of datapoints', 'Interpreter', 'LaTex');
 ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
@@ -134,4 +135,4 @@ ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
 
 
 
-
+ 
