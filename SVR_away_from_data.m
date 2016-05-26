@@ -78,8 +78,11 @@ plot(newX, newY,'-', 'Color', COLOR.sinc);
 plot(x, t, '.', 'Color', COLOR.data);
 plot(newX, newY_svm, '-', 'Color', COLOR.pred)
 plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
-area(newX, newY_svm + OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
-area(newX, newY_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+
+boundedline(newX,newY_svm, OPTIONS.epsilon, 'r')
+
+% area(newX, newY_svm + OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+% area(newX, newY_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
   
 % redraw
 plot(newX, newY,'-', 'Color', COLOR.sinc);

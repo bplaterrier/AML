@@ -49,6 +49,9 @@ MODEL.sigma_star = sigma_star;
 plotRVR(x,y,y_rvm,t,data,MODEL,COLOR);
 axis([-inf inf -1 1.5])
  
+figure
+hold on
+
 
 %% Do RVR on the data (rvm_regressor)
 % clc

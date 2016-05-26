@@ -73,9 +73,10 @@ plot(x, t, '.', 'Color', COLOR.data);
 plot(newX, newY_rvm,'r-','LineWidth', 1, 'Color', COLOR.pred);
 plot(x(MODEL.RVs_idx), t(MODEL.RVs_idx),'o', 'Color', COLOR.rv);
 
+ boundedline(newX,newY_rvm, MODEL.sigma_star, 'r')
 
-area(newX, MODEL.mu_star + MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
-area(newX, MODEL.mu_star - MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1.0);
+% area(newX, MODEL.mu_star + MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+% area(newX, MODEL.mu_star - MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1.0);
 plot(newX, newY_rvm + sqrt(1/MODEL.beta),'r:','LineWidth', 1, 'Color', COLOR.pred);
 plot(newX, newY_rvm - sqrt(1/MODEL.beta),'r:','LineWidth', 1, 'Color', COLOR.pred);
    

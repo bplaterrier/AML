@@ -24,9 +24,11 @@ function [] = plotRVR(x, y, y_rvm, t, data, MODEL, COLOR)
         plot(x(MODEL.RVs_idx), t(MODEL.RVs_idx),'o', 'Color', COLOR.rv);
         
         % Variable Noise tube
-        area(x, MODEL.mu_star + MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
-        area(x, MODEL.mu_star - MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+        boundedline(x,y_rvm, MODEL.sigma_star, 'r')
         
+%         area(x, MODEL.mu_star + MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+%         area(x, MODEL.mu_star - MODEL.sigma_star, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+%         
         % Fixed noise tube (1/beta)
         plot(x, y_rvm + sqrt(1/MODEL.beta),'r:','LineWidth', 1, 'Color', COLOR.pred);
         plot(x, y_rvm - sqrt(1/MODEL.beta),'r:','LineWidth', 1, 'Color', COLOR.pred);

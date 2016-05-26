@@ -24,8 +24,9 @@ function [] = plotSVR( x, y, y_svm, t, data, MODEL, OPTIONS, COLOR )
         plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
         
         % Epsilon-tube
-        area(x, y_svm + OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
-        area(x, y_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
+        boundedline(x,y_svm, OPTIONS.epsilon, 'r')
+%         area(x, y_svm + OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'r', 'FaceAlpha', 0.1);
+%         area(x, y_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
         
         
         % Data
