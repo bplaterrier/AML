@@ -125,9 +125,10 @@ Kfold           = 10;
 
 metric = 'nmse';
 
+tic
 % Do Grid Search
 [ ctest, ctrain , cranges ] = ml_grid_search_regr( x, t, Kfold, parameters, step);
-
+toc
 %% Get CV statistics
 statsSVR = ml_get_cv_grid_states_regression(ctest,ctrain);
 
