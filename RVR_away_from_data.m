@@ -32,6 +32,7 @@ OPTIONS.kernel = 'gaussian';        % choose kernel function (see SB2_KernelFunc
 OPTIONS.lengthScale = 2.2;          % ~std. dev. for gaussian kernel
 OPTIONS.useBias = 0;                % add bias vector to the estimated model
 OPTIONS.maxIts = 500;
+OPTIONS.BASIS = [];
 
 % Normalize the data
 x_rvm = x;%normalize(x);

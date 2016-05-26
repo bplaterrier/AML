@@ -34,22 +34,22 @@ maxIts              = OPTIONS.maxIts;
 %monIts              = round(maxIts/20);
 
 %% Set environment settings
-USER_OPTIONS  = SB2_UserOptions('iterations', maxIts, 'diagnosticLevel', 2, 'monitor', 10);
+USER_OPTIONS  = SB2_UserOptions('iterations', maxIts, 'diagnosticLevel', 0, 'monitor', 10);
 SETTINGS = SB2_ParameterSettings('NoiseStd', 0.1);
 
 %% Compute basis matrix
-BASIS = SB2_KernelFunction(x, x, kernel, lengthScale);
-M = size(BASIS,2);
-
-% Add bias vector if necessary
-if useBias
-   BASIS = [BASIS ones(M,1)]; 
+if isempty(OPTIONS.BASIS),
+    OPTIONS.BASIS = SB2_KernelFunction(x, x, kernel, lengthScale);
+    M = size(OPTIONS.BASIS,2);
+    % Add bias vector if necessary
+    if useBias
+       OPTIONS.BASIS = [OPTIONS.BASIS ones(M,1)]; 
+    end
 end
-
 %% Train RVR Model
 % "Train" a sparse Bayes kernel-based model (relevance vector machine) 
 [PARAMETER, HYPERPARAMETER, DIAGNOSTIC] = ...
-    SparseBayes('Gaussian', BASIS, t, USER_OPTIONS, SETTINGS);
+    SparseBayes('Gaussian', OPTIONS.BASIS, t, USER_OPTIONS, SETTINGS);
 
 %% Model Parameters
 %       WEIGHTS Parameter values of estimated model (sparse)

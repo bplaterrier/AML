@@ -26,7 +26,6 @@ end
 if isempty(MODEL)
         % Train SVM Regressor
         MODEL = svr_train(t, x, OPTIONS);
-        disp(MODEL);
 end
 
 % Predict Values based on query points
