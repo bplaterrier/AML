@@ -1,5 +1,12 @@
 function [] = plotRVR(x, y, y_rvm, t, data, MODEL, COLOR)
 
+    if isempty(COLOR)
+        COLOR.sinc = 'k';     % color of the actual function
+        COLOR.data = 'b';     % color of the real data
+        COLOR.pred = 'r';     % color of the prediction
+        COLOR.rv = 'k';       % color of the relevance vectors
+    end
+    
     figure;
     if data.D==1,
         hold on
