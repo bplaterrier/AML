@@ -10,6 +10,12 @@ x = [CRIM ZN INDUS CHAS NOX RM AGE DIS RAD TAX PTRATIO B LSTAT];
 
 x = normalize(x);
 
+%%
+energy = xlsread('ENB2012_data.xlsx');
+t = energy(:,10);
+x = [energy(:,1) energy(:,2) energy(:,3) energy(:,4) energy(:,5) energy(:,6) energy(:,7) energy(:,8)];
+
+x = normalize(x);
 %% RVR
 
 % Choose kernel function
@@ -46,7 +52,7 @@ OPTIONS.BASIS = [];
 OPTIONS.kernel = 'gaussian';
 OPTIONS.kernel_ = 'gauss';
 
-rbf_vars = [0.1:0.1:20];
+rbf_vars = [0.01:0.1:10];
 
 test  = cell(length(rbf_vars),1);
 train = cell(length(rbf_vars),1);
@@ -100,17 +106,18 @@ length(MODEL.RVs_idx)
 OPTIONS.svr_type        = 0;            % 0: epsilon-SVR / 1: nu-SVR
 OPTIONS.kernel_type     = 2;            % 1: linear / 2: gaussian / 3: polyN / 4: precomputed kernel matrix
 OPTIONS.kernel          = 'gaussian';   % kernel type, used for custom basis matrix
-OPTIONS.C               = 50;           % penalty factor (default 1)
+OPTIONS.C               = 500;           % penalty factor (default 1)
 OPTIONS.nu              = 0.05;         % nu parameter (default 1)
-OPTIONS.epsilon         = 10;          % epsilon parameter (default 0.1)
+OPTIONS.epsilon         = 1;          % epsilon parameter (default 0.1)
 OPTIONS.tolerance       = 0.001;        % tolerance of termination criterion (default 0.001)
 OPTIONS.lengthScale     = 10;          % lengthscale parameter (~std dev for gaussian kernel)
 OPTIONS.probabilities   = 0;            % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
 OPTIONS.useBias         = 0;            % add bias to the model (for custom basis matrix)
 
-MODEL = svr_train(t, x, OPTIONS);
-[y_svm] = svr_predict(x, MODEL);
-
+% MODEL = svr_train(t, x, OPTIONS);
+% [y_svm] = svr_predict(x, MODEL);
+MODEL = [];
+[y_svm, MODEL] = svm_regressor(x, t, OPTIONS, MODEL);
 
 [sortedX, index] = sort(x(:,1));
 plot(sortedX, y_svm(index))
@@ -123,10 +130,10 @@ gfit2(t, y_svm, '2')
 disp('Parameter grid search SVR');
 
 limits_C        = [1 500];  % Limits of penalty C
-limits_epsilon  = [0.5 2];  % Limits of epsilon
-limits_w        = [0.1 1];  % Limits of kernel width \sigma
+limits_epsilon  = [1 10];  % Limits of epsilon
+limits_w        = [0.01 1];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
-step            = 2;         % Step of parameter grid 
+step            = 10;         % Step of parameter grid 
 Kfold           = 10;
 
 metric = 'nmse';

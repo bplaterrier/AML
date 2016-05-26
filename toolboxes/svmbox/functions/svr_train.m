@@ -72,6 +72,10 @@ end
 options = options{1};
 
 
+    disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+    disp(['C = ', num2str(OPTIONS.C), ', eps = ', num2str(OPTIONS.epsilon), ', sigma = ',num2str(OPTIONS.lengthScale)]);
+    disp('%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+    
 %% Train SVM Model
 MODEL = svmtrain(t, x, options);
 MODEL.kernel = OPTIONS.kernel;

@@ -108,7 +108,7 @@ for k=1:K
     
     % Train the classifier
     [~,model]    = f(x(train(:),:),t(train(:)),[]);
-    disp(model)
+
     % g is the trained classifier
     g           = @(X)f(X,[],model);
     
