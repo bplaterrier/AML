@@ -23,8 +23,8 @@ if isempty(t)
 end
 
 % Transform data to columns
-x = x(:);
-t = t(:);
+% x = x(:);
+% t = t(:);
 
 % if the model doesn't exist, train it
 if isempty(MODEL)

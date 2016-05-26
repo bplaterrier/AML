@@ -75,8 +75,11 @@ disp('Parameter grid search RVR');
 %Set RVR OPTIONS%
 OPTIONS.useBias = 0;
 OPTIONS.maxIts  = 100;
+OPTIONS.BASIS = [];
 
 %Set Kernel OPTIONS%
+
+OPTIONS.kernel = 'gaussian'; 
 OPTIONS.kernel_ = 'gauss';
 
 rbf_vars = [0.05:0.05:0.5];
@@ -87,7 +90,7 @@ train = cell(length(rbf_vars),1);
 for i=1:length(rbf_vars)
     disp(['[' num2str(i) '/' num2str(length(rbf_vars)) ']']);
     
-    OPTIONS.width       = rbf_vars(i);   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)    
+    OPTIONS.lengthScale       = rbf_vars(i);   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)    
     
     f                       = @(X,y,model)rvm_regressor(X,y,OPTIONS,model);
     [test_eval,train_eval]  = ml_kcv(x,y,Kfold,f,'regression');
