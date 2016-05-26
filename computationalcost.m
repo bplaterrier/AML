@@ -4,11 +4,8 @@ close all;
 %%  computational cost
 % Set parameters for computational cost
 nb_try = 3;
-% % Set parameters for sinc function data 
-% n_limites = [100, 1000];
-% epsilon   = 0.1;
-% y_offset  = 0;
-% x_limits  = [-5, 5];
+n_jump = 100;
+
 % Set default values for data
 n_limites = [100, 4000];        % number of samples
 data.D =    1;                  % dimension of data
@@ -34,13 +31,17 @@ rvr_options.maxIts  = 500;
 rvr_options.kernel  = 'gaussian';
 rvr_options.lengthScale = 0.2;
 
-%computational cost 
+%computational cost
+gf_svr = [];
+gf_rvr = [];
 time_svr = [];
 time_rvr = [];
 for k = 1: 1 : nb_try 
+    g_svr = [];
+    g_rvr = [];
     t_svr = [];
     t_rvr = [];
-    for n = n_limites(1): 10 : n_limites(2)
+    for n = n_limites(1): n_jump : n_limites(2)
                
         % Generate True function and data
         data.N = n;
@@ -54,36 +55,43 @@ for k = 1: 1 : nb_try
         tstart = tic;
         [y_svr, model] = svm_regressor(x_svr, y, svr_options, []);
         t_svr = [t_svr, toc(tstart)];     
-%         COL_sinc = 'k';     % color of the actual function
-%         COL_data = 'b';     % color of the real data
-%         COL_pred = 'r';     % color of the prediction
-%         COL_rv = 'k';       % color of the relevance vectors
-%         figure(1)
-%         plot(x, y_svr,'-','LineWidth', 1, 'Color', COL_pred);
-%         plot(x(model.sv_indices), y(model.sv_indices),'o', 'Color', COL_rv);
-%         drawnow
-%         legend('Actual Model', 'Datapoints', 'Regression', 'Support Vectors', 'Location', 'NorthWest')
-%     
+%         %plot
+%         plotSVR( x_svr, y_true, y_svr, y, data, model, svr_options, [] );
+        
+        %goodness of fit
+        g_svr = [g_svr, gfit2(y,y_svr,'2')];
+        
+
         %Train RVR Model
         clear model y_rvr
         tstart = tic;
         [model] = rvr_train(x_rvr, y, rvr_options);
         [y_rvr] = rvr_predict(x_rvr,  model);
         t_rvr = [t_rvr, toc(tstart)];
-%        plot(x_rvr, y_rvr);
+%         %plot
+%         plotRVR(x_rvr, y_true, y_rvr, y, data, model, [])
+
+        %goodness of fit
+        g_rvr = [g_rvr, gfit2(y,y_rvr,'2')];
         
     end
+    gf_svr = [gf_svr; g_svr];
+    gf_rvr = [gf_rvr; g_rvr];
     time_svr = [time_svr; t_svr];
     time_rvr = [time_rvr; t_rvr];   
 end
 
 % std
-nb_samples = n_limites(1): 10 : n_limites(2);
+nb_samples = n_limites(1): n_jump : n_limites(2);
 figure(1)
 hold on
 errorbar(nb_samples ,mean(time_svr,1),std (time_svr, 0, 1))
 errorbar(nb_samples ,mean(time_rvr,1),std (time_rvr, 0, 1))
 hold off
-% Plot times vs N
-%nb_samples = n_limites(1): 10 : n_limites(2);
-%plot(nb_samples ,mean(time_svr,1), nb_samples ,mean(time_rvr,1))
+figure(2)
+hold on
+errorbar(nb_samples ,mean(gf_svr,1),std (gf_svr, 0, 1))
+errorbar(nb_samples ,mean(gf_rvr,1),std (gf_rvr, 0, 1))
+hold off
+
+
