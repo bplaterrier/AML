@@ -11,7 +11,7 @@ rseed = 1; % choose a seed
 data.N = 2000;                   % number of samples
 data.D = 1;                     % dimension of data
 data.scale = 10;                % scale of dimensions
-data.noise = 0.1;               % scale of noise
+data.noise = 0.2;               % scale of noise
 data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 
 % Generate the sinc data
@@ -65,7 +65,7 @@ limits_C        = [1 500];   % Limits of penalty C
 limits_epsilon  = [0.1 0.5];  % Limits of epsilon
 limits_w        = [0.01 0.5];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
-step            = 2;         % Step of parameter grid 
+step            = 5;         % Step of parameter grid 
 Kfold           = 10;
 
 metric = 'nmse';

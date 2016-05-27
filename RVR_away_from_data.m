@@ -20,7 +20,7 @@ data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 COLOR.sinc = 'k';     % color of the actual function
 COLOR.data = 'b';     % color of the real data
 COLOR.pred = 'r';     % color of the prediction
-COLOR.rv = 'k';       % color of the relevance vectors
+COLOR.rv = 'g';       % color of the relevance vectors
 
 %% Plot the data and actual function
 plotModel(x, y, t, data, COLOR);
@@ -66,7 +66,7 @@ close all
 
 figure
 
-plot(newX, newY,':', 'Color', COLOR.sinc);
+plot(newX, newY,'--', 'Color', COLOR.sinc);
 hold on
 
 plot(x, t, '.', 'Color', COLOR.data);
@@ -82,7 +82,7 @@ plot(newX, newY_rvm - sqrt(1/MODEL.beta),'r:','LineWidth', 1, 'Color', COLOR.pre
    
 
 %redraw
-plot(newX, newY,':', 'Color', COLOR.sinc);
+plot(newX, newY,'--', 'Color', COLOR.sinc);
 plot(x, t, '.', 'Color', COLOR.data);
 plot(newX, newY_rvm,'r-','LineWidth', 1, 'Color', COLOR.pred);
 plot(x(MODEL.RVs_idx), t(MODEL.RVs_idx),'o', 'Color', COLOR.rv);
