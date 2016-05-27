@@ -20,7 +20,7 @@ svr_options.C           = 1;    % set the parameter C of C-SVC, epsilon-SVR, and
 svr_options.epsilon     = 0.1;  % set the epsilon in loss function of epsilon-SVR 
 svr_options.kernel_type = 2;    % 0: linear: u'*v, 1: polynomial: (gamma*u'*v + coef0)^degree, 2: radial basis function: exp(-gamma*|u-v|^2)
 svr_options.kernel  = 'gaussian';
-svr_options.sigma       = 0.50; % radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
+%svr_options.sigma       = 0.50; % radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
 svr_options.lengthScale = 0.01;  % lengthscale parameter (~std dev for gaussian kernel)
 svr_options.probabilities   = 0;    % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
 svr_options.useBias         = 0;    % add bias to the model (for custom basis matrix)
@@ -119,17 +119,21 @@ ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
 
 %% plot sv
 figure(3)
-hold on
+subplot(1,2,1);
 nb_samples = n_limites(1): n_jump : n_limites(2);
-boundedline(nb_samples, mean(sv_svr,1), std(sv_svr, 0, 1), 'b', nb_samples, mean(sv_rvr,1), std(sv_rvr, 0, 1), 'r','transparency', 0.1, 'alpha');
-hold off
+boundedline(nb_samples, mean(sv_svr,1), std(sv_svr, 0, 1), 'b', 'transparency', 0.1, 'alpha');
+title('SVR Sparsity (mean $\pm$ std)', 'Interpreter', 'LaTex'); 
+xlabel('Number of datapoints', 'Interpreter', 'LaTex'); 
+ylabel('Number of support vectors', 'Interpreter', 'LaTex') 
 
-axis([0 inf 0 inf]);
-% set(gca,'yscale','log')
-legend({'SVR', 'RVR'}, 'Location', 'NorthWest', 'Interpreter', 'LaTex');
-title('Number of support/relevance vector (mean $\pm$ std)', 'Interpreter', 'LaTex');
-xlabel('Number of datapoints', 'Interpreter', 'LaTex');
-ylabel('Normalized Mean Square Error', 'Interpreter', 'LaTex')
+subplot(1,2,2);
+boundedline(nb_samples, mean(sv_rvr,1), std(sv_rvr, 0, 1), 'r', 'transparency', 0.1, 'alpha');
+axis([0 inf 0 inf]); 
+title('RVR Sparsity (mean $\pm$ std)', 'Interpreter', 'LaTex'); 
+xlabel('Number of datapoints', 'Interpreter', 'LaTex'); 
+ylabel('Number of relevance vectors', 'Interpreter', 'LaTex') 
+
+
 
 
 
