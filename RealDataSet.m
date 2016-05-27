@@ -47,12 +47,12 @@ disp('Parameter grid search RVR');
 
 %Set RVR OPTIONS%
 OPTIONS.useBias = 0;
-OPTIONS.maxIts  = 100;
+OPTIONS.maxIts  = 500;
 OPTIONS.BASIS = [];
 OPTIONS.kernel = 'gaussian';
 OPTIONS.kernel_ = 'gauss';
 
-rbf_vars = [0.01:0.01:10];
+rbf_vars = linspace(0.1, 5, 15);
 
 test  = cell(length(rbf_vars),1);
 train = cell(length(rbf_vars),1);
@@ -130,7 +130,7 @@ gfit2(t, y_svm, '2')
 disp('Parameter grid search SVR');
 
 limits_C        = [1 200];  % Limits of penalty C
-limits_epsilon  = [0.01 0.5];  % Limits of epsilon
+limits_epsilon  = [0.1 20];  % Limits of epsilon
 limits_w        = [0.1 2];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
 step            = 15;         % Step of parameter grid 
@@ -187,6 +187,11 @@ OPTIONS.useBias         = 0;            % add bias to the model (for custom basi
 OPTIONS.C           = C_opt;   % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
 OPTIONS.epsilon     = epsilon_opt;  % nu \in (0,1) (upper-bound for misclassifications on margni and lower-bound for # of SV) for nu-SVM
 OPTIONS.lengthScale = sigma_opt;   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
+
+OPTIONS.C           = 50;   % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
+OPTIONS.epsilon     = 3;  % nu \in (0,1) (upper-bound for misclassifications on margni and lower-bound for # of SV) for nu-SVM
+OPTIONS.lengthScale = 0.56;   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
+
 
 MODEL = svr_train(t, x, OPTIONS);
 [y_svm] = svr_predict(x, MODEL);

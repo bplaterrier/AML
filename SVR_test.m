@@ -8,7 +8,7 @@ clc;
 rseed = 1; % choose a seed
 
 % Set default values for data
-data.N = 100;                   % number of samples
+data.N = 4000;                   % number of samples
 data.D = 1;                     % dimension of data
 data.scale = 10;                % scale of dimensions
 data.noise = 0.1;               % scale of noise
@@ -35,9 +35,8 @@ x_svm = normalize(x);
 OPTIONS.svr_type        = 0;            % 0: epsilon-SVR / 1: nu-SVR
 OPTIONS.kernel_type     = 2;            % 1: linear / 2: gaussian / 3: polyN / 4: precomputed kernel matrix
 OPTIONS.kernel          = 'gaussian';   % kernel type, used for custom basis matrix
-OPTIONS.C               = 5;           % penalty factor (default 1)
-OPTIONS.nu              = 0.05;         % nu parameter (default 1)
-OPTIONS.epsilon         = 0.2;          % epsilon parameter (default 0.1)
+OPTIONS.C               = 50;           % penalty factor (default 1)
+OPTIONS.epsilon         = 0.1;          % epsilon parameter (default 0.1)
 OPTIONS.tolerance       = 0.001;        % tolerance of termination criterion (default 0.001)
 OPTIONS.lengthScale     = 0.2;          % lengthscale parameter (~std dev for gaussian kernel)
 OPTIONS.probabilities   = 0;            % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
@@ -46,7 +45,9 @@ OPTIONS.useBias         = 0;            % add bias to the model (for custom basi
 % Train the model
 MODEL = svr_train(t, x_svm, OPTIONS);
 
+tstart = tic;
 [y_svm, MODEL] = svm_regressor(x_svm, t, OPTIONS, MODEL);
+toc(tstart)
 
 % Do SVR on data using svmregressor
 % [y_svm] = svr_predict(x_svm, MODEL);

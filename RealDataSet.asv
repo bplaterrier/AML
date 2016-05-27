@@ -129,11 +129,11 @@ gfit2(t, y_svm, '2')
 
 disp('Parameter grid search SVR');
 
-limits_C        = [1 500];  % Limits of penalty C
-limits_epsilon  = [1 10];  % Limits of epsilon
-limits_w        = [0.1 1];  % Limits of kernel width \sigma
+limits_C        = [1 200];  % Limits of penalty C
+limits_epsilon  = [0.1 20];  % Limits of epsilon
+limits_w        = [0.1 2];  % Limits of kernel width \sigma
 parameters      = vertcat(limits_C, limits_epsilon, limits_w);
-step            = 10;         % Step of parameter grid 
+step            = 15;         % Step of parameter grid 
 Kfold           = 10;
 
 metric = 'nmse';
@@ -166,15 +166,32 @@ hcv = ml_plot_cv_grid_states_regression(statsSVR,parameters_used,cv_plot_options
 [C_min, eps_min, sigma_min] = ind2sub(size(statsSVR.test.(metric).mean),indSVR);
 
 % a garder
-C_opt = cranges{1}(C_min);
-epsilon_opt = cranges{2}(eps_min);
-sigma_opt = cranges{3}(sigma_min);
+C_opt = cranges{1}(C_min)
+epsilon_opt = cranges{2}(eps_min)
+sigma_opt = cranges{3}(sigma_min)
 
 % Test model with optimal parameter
 % clear svr_options
+OPTIONS.svr_type        = 0;            % 0: epsilon-SVR / 1: nu-SVR
+OPTIONS.kernel_type     = 2;            % 1: linear / 2: gaussian / 3: polyN / 4: precomputed kernel matrix
+OPTIONS.kernel          = 'gaussian';   % kernel type, used for custom basis matrix
+OPTIONS.C               = 500;           % penalty factor (default 1)
+OPTIONS.nu              = 0.05;         % nu parameter (default 1)
+OPTIONS.epsilon         = 1;          % epsilon parameter (default 0.1)
+OPTIONS.tolerance       = 0.001;        % tolerance of termination criterion (default 0.001)
+OPTIONS.lengthScale     = 10;          % lengthscale parameter (~std dev for gaussian kernel)
+OPTIONS.probabilities   = 0;            % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
+OPTIONS.useBias         = 0;            % add bias to the model (for custom basis matrix)
+
+
 OPTIONS.C           = C_opt;   % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
 OPTIONS.epsilon     = epsilon_opt;  % nu \in (0,1) (upper-bound for misclassifications on margni and lower-bound for # of SV) for nu-SVM
 OPTIONS.lengthScale = sigma_opt;   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
+
+OPTIONS.C           = 500;   % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
+OPTIONS.epsilon     = 3.5;  % nu \in (0,1) (upper-bound for misclassifications on margni and lower-bound for # of SV) for nu-SVM
+OPTIONS.lengthScale = 0.56;   %  radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
+
 
 MODEL = svr_train(t, x, OPTIONS);
 [y_svm] = svr_predict(x, MODEL);

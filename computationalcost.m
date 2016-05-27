@@ -7,21 +7,21 @@ nb_try = 10;
 n_jump = 100;
 
 % Set default values for data
-n_limites = [100, 4000];        % number of samples
+n_limites = [200, 2000];        % number of samples
 data.D =    1;                  % dimension of data
 data.scale = 10;                % scale of dimensions
-data.noise = 0.2;               % scale of noise
+data.noise = 0.1;               % scale of noise
 data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 
 clear svr_options
 % SVR OPTIONS
 svr_options.svr_type            = 0;     % 0: epsilon-SVR, 1: nu-SVR
-svr_options.C                   = 50;    % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
-svr_options.epsilon             = 0.2;  % set the epsilon in loss function of epsilon-SVR 
+svr_options.C                   = 1;    % set the parameter C of C-SVC, epsilon-SVR, and nu-SVR 
+svr_options.epsilon             = 0.1;  % set the epsilon in loss function of epsilon-SVR 
 svr_options.kernel_type         = 2;     % 0: linear: u'*v, 1: polynomial: (gamma*u'*v + coef0)^degree, 2: radial basis function: exp(-gamma*|u-v|^2)
 svr_options.kernel              = 'gaussian';
 %svr_options.sigma               = 0.50; % radial basis function: exp(-gamma*|u-v|^2), gamma = 1/(2*sigma^2)
-svr_options.lengthScale         = 2.2;   % lengthscale parameter (~std dev for gaussian kernel)
+svr_options.lengthScale         = 0.01;   % lengthscale parameter (~std dev for gaussian kernel)
 svr_options.probabilities       = 0;     % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
 svr_options.useBias             = 0;     % add bias to the model (for custom basis matrix)
 
@@ -45,20 +45,27 @@ sv_rvr      = zeros(nb_try, length(n_limites(1): n_jump : n_limites(2)));
 for k1 = 1: 1 : nb_try 
     k2 = 1;
     for n = n_limites(1): n_jump : n_limites(2)
-  
+        disp(' ');
+        disp(n);
+        disp(' ');
         % Generate True function and data
         data.N = n;
         [x, y_true, y] = generateSinc(data, k1);
         
         % Define inputs
-        x_svr = x;
-        x_rvr = x;
+        x_svr = normalize(x);
+        x_rvr = normalize(x);
              
         % Train SVR Model
-        clear model y_svr
+        clear model y_svr tstart
         tstart = tic;
-        [y_svr, model] = svm_regressor(x_svr, y, svr_options, []);
-        time_svr(k1,k2) = toc(tstart);     
+        
+        model = svr_train(y, x, svr_options);
+        toc
+        [y_svr]  = svr_predict(x, model);
+        
+%         [y_svr, model] = svm_regressor(x_svr, y, svr_options, []);
+        time_svr(k1,k2) = toc(tstart)    
         
         %goodness of fit
         gf_svr(k1,k2) = gfit2(y,y_svr,'2');
@@ -68,14 +75,11 @@ for k1 = 1: 1 : nb_try
         
 
         %Train RVR Model
-        clear model y_rvr
+        clear model y_rvr tstart
         tstart = tic;
         [model] = rvr_train(x_rvr, y, rvr_options);
         [y_rvr,~,~] = rvr_predict(x_rvr,  model);
-        
         time_rvr(k1,k2) = toc(tstart);
-%         %plot
-%         plotRVR(x_rvr, y_true, y_rvr, y, data, model, [])
 
         %goodness of fit
         gf_rvr(k1,k2) = gfit2(y,y_rvr,'2');
@@ -88,7 +92,7 @@ for k1 = 1: 1 : nb_try
     end
  end
 
-%% plot time
+% plot time
 figure
 hold on
 nb_samples = n_limites(1): n_jump : n_limites(2);
