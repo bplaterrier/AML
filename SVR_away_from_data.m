@@ -11,7 +11,7 @@ rseed = 1; % choose a seed
 data.N = 200;                   % number of samples
 data.D = 1;                     % dimension of data
 data.scale = 10;                % scale of dimensions
-data.noise = 0.1;               % scale of noise
+data.noise = 0.2;               % scale of noise
 data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 
 % Generate the sinc data
@@ -21,7 +21,7 @@ data.noiseType = 'gauss';       % type of noise ('gauss' or 'unif')
 COLOR.sinc = 'k';     % color of the actual function
 COLOR.data = 'b';     % color of the real data
 COLOR.pred = 'r';     % color of the prediction
-COLOR.rv = 'k';       % color of the relevance vectors
+COLOR.rv = 'g';       % color of the relevance vectors
 
 %% Plot the data and actual function
 plotModel(x, y, t, data, COLOR);
@@ -37,9 +37,9 @@ OPTIONS.kernel_type     = 2;            % 1: linear / 2: gaussian / 3: polyN / 4
 OPTIONS.kernel          = 'gaussian';   % kernel type, used for custom basis matrix
 OPTIONS.C               = 50;           % penalty factor (default 1)
 OPTIONS.nu              = 0.05;         % nu parameter (default 1)
-OPTIONS.epsilon         = 0.1;          % epsilon parameter (default 0.1)
+OPTIONS.epsilon         = 0.25;          % epsilon parameter (default 0.1)
 OPTIONS.tolerance       = 0.001;        % tolerance of termination criterion (default 0.001)
-OPTIONS.lengthScale     = 2.2;          % lengthscale parameter (~std dev for gaussian kernel)
+OPTIONS.lengthScale     = 2.3;          % lengthscale parameter (~std dev for gaussian kernel)
 OPTIONS.probabilities   = 0;            % whether to train a SVR model for probability estimates, 0 or 1 (default 0);
 OPTIONS.useBias         = 0;            % add bias to the model (for custom basis matrix)
 
@@ -60,8 +60,8 @@ nmse = gfit2(t, y_svm, '2');
 disp([mse nmse]);
 
 %% Plot the regression model away from the original data
-data.N = 200;                   % number of samples
-data.scale = 25;                % scale of dimensions
+data.N = 300;                   % number of samples
+data.scale = 20;                % scale of dimensions
 
 [newX, newY, ~] = generateSinc(data, rseed);
 
@@ -74,7 +74,7 @@ close all
 % Plot the results (adapted from plotSVR.m)
 figure
 hold on 
-plot(newX, newY,'-', 'Color', COLOR.sinc);
+plot(newX, newY,'--', 'Color', COLOR.sinc);
 plot(x, t, '.', 'Color', COLOR.data);
 plot(newX, newY_svm, '-', 'Color', COLOR.pred)
 plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
@@ -85,7 +85,7 @@ boundedline(newX,newY_svm, OPTIONS.epsilon, 'r')
 % area(newX, newY_svm - OPTIONS.epsilon, -1, 'EdgeAlpha', 0, 'FaceColor', 'w', 'FaceAlpha', 1);
   
 % redraw
-plot(newX, newY,'-', 'Color', COLOR.sinc);
+plot(newX, newY,'--', 'Color', COLOR.sinc);
 plot(x, t, '.', 'Color', COLOR.data);
 plot(x, y_svm,'-',  'LineWidth', 1, 'Color', COLOR.pred);
 plot(x(MODEL.sv_indices), t(MODEL.sv_indices),'o', 'Color', COLOR.rv);
