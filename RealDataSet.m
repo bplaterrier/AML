@@ -34,7 +34,9 @@ MODEL = [];
 % Predict values
 % [y_rvm, mu_star, sigma_star] = rvr_predict(x, MODEL);
 
+gfit2(t, y_rvm, '1')
 gfit2(t, y_rvm, '2')
+length(MODEL.RVs_idx)
 
 [sortedX, index] = sort(x(:,3));
 plot(sortedX, y_rvm(index))
@@ -91,7 +93,7 @@ options.para_name   = 'variance rbf';
 [sigma_min] = ind2sub(size(stats.test.('nmse').mean),indSVR);
 
 
-sigma_opt = rbf_vars(sigma_min); % A garder
+sigma_opt = rbf_vars(sigma_min) % A garder
 
 
 OPTIONS.lengthScale   = sigma_opt;
@@ -99,6 +101,7 @@ clear model
 [y_rvm, MODEL] = rvm_regressor(x,t,OPTIONS,[]);
 
 % A garder
+gfit2(t, y_rvm, '1')
 gfit2(t, y_rvm, '2')
 length(MODEL.RVs_idx)
 
@@ -122,7 +125,9 @@ MODEL = [];
 [sortedX, index] = sort(x(:,1));
 plot(sortedX, y_svm(index))
 
+gfit2(t, y_svm, '1')
 gfit2(t, y_svm, '2')
+MODEL.totalSV
 
 %% SVR Cross-validation
 %% Do K-fold crossvalidation on the data
@@ -197,5 +202,6 @@ MODEL = svr_train(t, x, OPTIONS);
 [y_svm] = svr_predict(x, MODEL);
 
 % a garder
-MODEL.totalSV
+gfit2(t, y_svm, '1')
 gfit2(t, y_svm, '2')
+MODEL.totalSV
